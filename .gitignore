@@ -4,4 +4,5 @@
 .idea
 Code Files/.idea/
 Code Files/venv/
-*.git
+.gitignore
+.gitattributes
