@@ -1,4 +1,8 @@
 
 *.xml
 *.xlsx
-Meteors Code/Documentation/Documentation.odt
+.idea
+Code Files/.idea/
+Code Files/venv/
+.gitignore
+.gitattributes
