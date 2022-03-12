@@ -1,6 +1,8 @@
-# ==================================================================================================================
-# This code enables the import of data and processes it in order to make the needed calculations later on
-# ==================================================================================================================
+"""
+==================================================================================================================
+This code enables the import of data and processes it in order to make the needed calculations later on
+==================================================================================================================
+"""
 import openpyxl
 import pandas as pd
 import sys
@@ -15,43 +17,37 @@ app = QtWidgets.QApplication(sys.argv)
 window = QtWidgets.QMainWindow()
 DirectoryPath = QtWidgets.QFileDialog.getExistingDirectory(None, "Select Directory") \
  \
-    # Declaring data frames containing the information for each observer (file).
+ # Declaring data frames containing the information for each observer (file).
 # The data they contain (columns) is described down below.
 
-breakDF = pd.DataFrame()  # Index number, Start(UT), End(UT)
-skyObscuredDF = pd.DataFrame()  # Index number, Time of Assessment (UT), Obscurity Coefficient (K)
+break_df = pd.DataFrame()  # Index number, Start(UT), End(UT)
+sky_obscured_df = pd.DataFrame()  # Index number, Time of Assessment (UT), Obscurity Coefficient (K)
 limitingMagnitudeDF = pd.DataFrame()  # Index number, Time of Assessment (UT), Limiting Magnitude (LM)
 centerOfFieldDF = pd.DataFrame()  # Index number, Right  Ascension, Declination
 meteorsDF = pd.DataFrame()  # Index number, Time of Occurrence(UT), Visible Magnitude (Mv), Velocity (V) (deg/sec),
 # Shower, Map, Begin X, Begin Y, End X, End Y (coordinates), Dead Time
 
 # Declaring data frames, which stitch the above-mentioned data together in single master charts
-breaks_MasterDF = pd.DataFrame()
-skyObscured_MasterDF = pd.DataFrame()
-limitingMagnitude_MasterDF = pd.DataFrame()
-centerOfField_MasterDF = pd.DataFrame()
+
 meteors_MasterDF = pd.DataFrame()
 
 # Filling the Master Data Frames with the data from the separate files
 for file in glob.glob(DirectoryPath + "/*.xlsx"):
-    breakDF = pd.read_excel(file, sheet_name='ObservationData',
-                            skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], usecols="A,B,C", header=None)
-    breaks_MasterDF = breaks_MasterDF.append(breakDF)
+    break_df = pd.read_excel(file, sheet_name='ObservationData',
+                             skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], usecols="A,B,C",
+                             header=None)
 
-    skyObscuredDF = pd.read_excel(file, sheet_name='ObservationData',
-                                  skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], usecols="E,F,G",
-                                  header=None)
-    skyObscured_MasterDF = skyObscured_MasterDF.append(skyObscuredDF)
+    sky_obscured_df = pd.read_excel(file, sheet_name='ObservationData',
+                                    skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], usecols="E,F,G",
+                                    header=None)
 
     limitingMagnitudeDF = pd.read_excel(file, sheet_name='ObservationData',
                                         skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], usecols="I,J,K",
                                         header=None)
-    limitingMagnitude_MasterDF = limitingMagnitude_MasterDF.append(limitingMagnitudeDF)
 
     centerOfFieldDF = pd.read_excel(file, sheet_name='ObservationData',
                                     skiprows=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], usecols="M,N,O",
                                     header=None)
-    centerOfField_MasterDF = centerOfField_MasterDF.append(centerOfFieldDF)
 
     meteorsDF = pd.read_excel(file, sheet_name='Meteors', skiprows=[1])
     meteors_MasterDF = meteors_MasterDF.append(meteorsDF, ignore_index=True)
@@ -79,5 +75,3 @@ for file in glob.glob(DirectoryPath + "/*.xlsx"):
     # Active time elapsed between the end of the observation and occurrence of the last meteor.
     endToLast = (timedelta(hours=observationEndUT.hour, minutes=observationEndUT.minute) - timedelta(
         hours=lastedMeteorSighted.hour, minutes=lastedMeteorSighted.minute)).total_seconds()
-
-
